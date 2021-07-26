@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Bech32m decoder demo</title>
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+        <!--<link rel="stylesheet" href="style.css">-->
+        <style>
+            .monospace {
+                font-family: Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
+            }
+            a.demo_link {
+                text-decoration-style: dashed;
+                text-underline-position: under;
+            }
+        </style>
+    </head>
+    <body>
+        <script>
+
+function toHexString(byteArray) {
+  return byteArray.map(function(byte) {
+    return ('0' + (byte & 0xFF).toString(16)).slice(-2);
+  }).join('')
+}
+
+function update_status() {
+    var address = document.getElementById("address").value;
+    var res = segwit_addr_ecc.check(address, ["bc", "foo", "da", "abcdef"]);
+    var cp = "<br/>";
+    if (res.error === null) {
+        document.getElementById("result").innerHTML = "<a style=\"color:green\">Ok, data " + toHexString(res.program) + "</a>";
+    } else {
+        document.getElementById("result").innerHTML = res.error;
+        if (res.pos !== null) {
+            cp = "";
+            for (var p = 0; p < address.length; ++p) {
+                if (res.pos.indexOf(p) != -1) {
+                    cp += "<a style=\"color:red\">" + address.charAt(p) + "</a>";
+                } else {
+                    cp += address.charAt(p);
+                }
+            }
+        }
+    }
+    if(!address.length) document.getElementById("result").innerHTML = "";
+    document.getElementById("copy").innerHTML = cp;
+}
+
+function load_addr(addr) {
+    document.getElementById("address").value = addr;
+    update_status();
+}
+</script>
+    <div class="container" style="margin-top:50px">
+		<div class="card text-left">
+			<h3 class="card-header">Bech32m decoder demo</h3>
+			<div class="card-block">
+				<p><a href="http://bitcoin.sipa.be/bech32/demo/demo.html">original demo</a> for Bitcoin use in BIP 173 & BIP 350</p>
+				<div class="form-group row">
+					<label for="address" class="col-sm-2 col-form-label col-form-label-lg">Encoded</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control form-control-lg monospace" id="address" placeholder="bech32m encoded data" size="74" oninput="update_status();" />
+					</div>
+				</div>
+				<p><span id="result"><br/></span></p>
+				<p><span id="copy" class="monospace"><br/></span></p>
+				Fill field with:
+				<ul>
+				<li> <a class="demo_link" href='javascript:load_addr("abcdef1l7aum6echk45nj3s0wdvt2fg8x9yrzpqzd3ryx");'>example from https://github.com/bitcoinjs/bech32</a>
+				<li> <a class="demo_link" href='javascript:load_addr("abcdef1l7mum6echk45nj3s0wdvt2fg8x9yrzpqzd3ryx");'>example from https://github.com/bitcoinjs/bech32 with 1 error</a>
+				<li> <a class="demo_link" href='javascript:load_addr("abcdef1l7mum7echk45nj3s0wdvt2fg8x9yrzpqzd3ryx");'>example from https://github.com/bitcoinjs/bech32 with 2 errors</a>
+				<li> <a class="demo_link" href='javascript:load_addr("abcdef1l7mum7echt45nj3s0wdvt2fg8x9yrzpqzd3ryx");'>example from https://github.com/bitcoinjs/bech32 with 3 errors</a>
+				<li> <a class="demo_link" href='javascript:load_addr("bc1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vqzk5jj0");'>P2TR example (proposed)</a>
+				<li> <a class="demo_link" href='javascript:load_addr("bc1p2xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vqzk5jj0");'>P2TR example (proposed) with 1 error</a>
+				<li> <a class="demo_link" href='javascript:load_addr("bc1p23lxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vqzk5jj0");'>P2TR example (proposed) with 2 errors</a>
+				<li> <a class="demo_link" href='javascript:load_addr("bc1p234xvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vqzk5jj0");'>P2TR example (proposed) with 3 errors</a>
+				<li> <a class="demo_link" href='javascript:load_addr("bc1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vqh2y7hd");'>P2TR example with errors (using Bech32 instead of Bech32m)</a>
+				</ul>
+			</div>
+		</div>
+    </div>
+
+    <script src="demo.js"></script>
+    </body>
+</html>
+
