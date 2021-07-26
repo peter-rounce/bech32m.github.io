@@ -167,9 +167,9 @@
 				}
 				data.push(d);
 			  }
-			  //if (validHrp.indexOf(hrp) == -1) {
-				//return {error:"Unknown part before the separator '1'", pos:range(0, hrp.length)};
-			  //}
+			  if (validHrp.indexOf(hrp) == -1) {
+				return {error:"Unknown part before the separator '1'", pos:range(0, hrp.length)};
+			  }
 			  var residue = polymod(hrpExpand(hrp).concat(data)) ^ getEncodingConst(encoding);
 			  if (residue != 0) {
 				var epos = locate_errors(residue, data.length);
